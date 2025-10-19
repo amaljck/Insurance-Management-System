@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Products Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <i class="fas fa-shield-alt"></i>
+                <h1>Insurance Management</h1>
+                <p>Admin Login Required</p>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" required placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter password">
+                </div>
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <div class="login-hint">
+                    <small>Default credentials: admin / admin</small>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application (hidden initially) -->
+    <div id="main-app" class="container" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>Insurance Management</h1>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-tab="dashboard">
+                    <i class="fas fa-chart-dashboard"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-tab="products">
+                    <i class="fas fa-box"></i> Products
+                </button>
+                <button class="nav-btn" data-tab="clients">
+                    <i class="fas fa-users"></i> Clients
+                </button>
+                <button class="nav-btn" data-tab="policies">
+                    <i class="fas fa-file-contract"></i> Policies
+                </button>
+                <button class="nav-btn" data-tab="claims">
+                    <i class="fas fa-file-invoice-dollar"></i> Claims
+                </button>
+                <button class="nav-btn logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <div class="tab-content active" id="dashboard">
+                <h2>Dashboard Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-products">0</h3>
+                            <p>Total Products</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-clients">0</h3>
+                            <p>Active Clients</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-claims">0</h3>
+                            <p>Pending Claims</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="active-policies">0</h3>
+                            <p>Active Policies</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-revenue">$0</h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="activity-list">
+                        <!-- Activities will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div class="tab-content" id="products">
+                <div class="tab-header">
+                    <h2>Insurance Products</h2>
+                    <button class="btn-primary" onclick="openProductModal()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" id="product-search" placeholder="Search products...">
+                    <button onclick="searchProducts()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+
+                <div class="products-grid" id="products-grid">
+                    <!-- Products will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Clients Tab -->
+            <div class="tab-content" id="clients">
+                <div class="tab-header">
+                    <h2>Client Management</h2>
+                    <button class="btn-primary" onclick="openClientModal()">
+                        <i class="fas fa-plus"></i> Add Client
+                    </button>
+                </div>
+
+                <div class="clients-filters">
+                    <input type="text" id="client-search" placeholder="Search clients..." onkeyup="searchClients()">
+                    <select id="client-status-filter" onchange="filterClientsByStatus()">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Policies</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clients-table-body">
+                            <!-- Clients will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Policies Tab -->
+            <div class="tab-content" id="policies">
+                <div class="tab-header">
+                    <h2>Policy Management</h2>
+                    <button class="btn-primary" onclick="openPolicyModal()">
+                        <i class="fas fa-plus"></i> Add Policy
+                    </button>
+                </div>
+
+                <div class="policies-filters">
+                    <input type="text" id="policy-search" placeholder="Search policies..." onkeyup="searchPolicies()">
+                    <select id="policy-status-filter" onchange="filterPoliciesByStatus()">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="expired">Expired</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Policy Number</th>
+                                <th>Client</th>
+                                <th>Product</th>
+                                <th>Premium</th>
+                                <th>Coverage</th>
+                                <th>Start Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="policies-table-body">
+                            <!-- Policies will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Claims Tab -->
+            <div class="tab-content" id="claims">
+                <div class="tab-header">
+                    <h2>Claims Management</h2>
+                    <button class="btn-primary" onclick="openClaimModal()">
+                        <i class="fas fa-plus"></i> New Claim
+                    </button>
+                </div>
+
+                <div class="claims-filters">
+                    <select id="status-filter" onchange="filterClaims()">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    <input type="date" id="date-filter" onchange="filterClaims()">
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Claim ID</th>
+                                <th>Client</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="claims-table-body">
+                            <!-- Claims will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div class="tab-content" id="reports">
+                <div class="tab-header">
+                    <h2>Reports & Analytics</h2>
+                    <button class="btn-primary" onclick="generateReport()">
+                        <i class="fas fa-download"></i> Generate Report
+                    </button>
+                </div>
+
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3>Policy Overview</h3>
+                        <div class="report-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Active Policies</span>
+                                <span class="stat-value" id="report-active-policies">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Expired Policies</span>
+                                <span class="stat-value" id="report-expired-policies">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Cancelled Policies</span>
+                                <span class="stat-value" id="report-cancelled-policies">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h3>Client Overview</h3>
+                        <div class="report-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Active Clients</span>
+                                <span class="stat-value" id="report-active-clients">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Inactive Clients</span>
+                                <span class="stat-value" id="report-inactive-clients">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Total Products</span>
+                                <span class="stat-value" id="report-total-products">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h3>Claims Overview</h3>
+                        <div class="report-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Pending Claims</span>
+                                <span class="stat-value" id="report-pending-claims">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Approved Claims</span>
+                                <span class="stat-value" id="report-approved-claims">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Rejected Claims</span>
+                                <span class="stat-value" id="report-rejected-claims">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <h3>Financial Overview</h3>
+                        <div class="report-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Monthly Revenue</span>
+                                <span class="stat-value" id="report-monthly-revenue">$0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Annual Revenue</span>
+                                <span class="stat-value" id="report-annual-revenue">$0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Claims Paid</span>
+                                <span class="stat-value" id="report-claims-paid">$0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Product Modal -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="product-modal-title">Add New Product</h3>
+                <span class="close" onclick="closeModal('product-modal')">&times;</span>
+            </div>
+            <form id="product-form">
+                <div class="form-group">
+                    <label for="product-name">Product Name</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-type">Type</label>
+                    <select id="product-type" required>
+                        <option value="">Select Type</option>
+                        <option value="life">Life Insurance</option>
+                        <option value="health">Health Insurance</option>
+                        <option value="auto">Auto Insurance</option>
+                        <option value="home">Home Insurance</option>
+                        <option value="travel">Travel Insurance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="product-premium">Monthly Premium ($)</label>
+                    <input type="number" id="product-premium" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-coverage">Coverage Amount ($)</label>
+                    <input type="number" id="product-coverage" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-description">Description</label>
+                    <textarea id="product-description" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('product-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Client Modal -->
+    <div class="modal" id="client-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="client-modal-title">Add New Client</h3>
+                <span class="close" onclick="closeModal('client-modal')">&times;</span>
+            </div>
+            <form id="client-form">
+                <div class="form-group">
+                    <label for="client-name">Full Name</label>
+                    <input type="text" id="client-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="client-email">Email</label>
+                    <input type="email" id="client-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="client-phone">Phone</label>
+                    <input type="tel" id="client-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="client-dob">Date of Birth</label>
+                    <input type="date" id="client-dob" required>
+                </div>
+                <div class="form-group">
+                    <label for="client-address">Address</label>
+                    <textarea id="client-address" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('client-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Claim Modal -->
+    <div class="modal" id="claim-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="claim-modal-title">New Claim</h3>
+                <span class="close" onclick="closeModal('claim-modal')">&times;</span>
+            </div>
+            <form id="claim-form">
+                <div class="form-group">
+                    <label for="claim-client">Client</label>
+                    <select id="claim-client" required>
+                        <option value="">Select Client</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="claim-product">Product</label>
+                    <select id="claim-product" required>
+                        <option value="">Select Product</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="claim-amount">Claim Amount ($)</label>
+                    <input type="number" id="claim-amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="claim-description">Description</label>
+                    <textarea id="claim-description" rows="3" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('claim-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Submit Claim</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Policy Modal -->
+    <div class="modal" id="policy-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="policy-modal-title">Add New Policy</h3>
+                <span class="close" onclick="closeModal('policy-modal')">&times;</span>
+            </div>
+            <form id="policy-form">
+                <div class="form-group">
+                    <label for="policy-client">Client</label>
+                    <select id="policy-client" required>
+                        <option value="">Select Client</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="policy-product">Product</label>
+                    <select id="policy-product" required>
+                        <option value="">Select Product</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="policy-number">Policy Number (optional)</label>
+                    <input type="text" id="policy-number" placeholder="Leave empty for auto-generation">
+                </div>
+                <div class="form-group">
+                    <label for="policy-start-date">Start Date</label>
+                    <input type="date" id="policy-start-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="policy-end-date">End Date (optional)</label>
+                    <input type="date" id="policy-end-date">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('policy-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Policy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Policy Status Modal -->
+    <div class="modal" id="policy-status-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Policy Status</h3>
+                <span class="close" onclick="closeModal('policy-status-modal')">&times;</span>
+            </div>
+            <form id="policy-status-form">
+                <div class="form-group">
+                    <label for="policy-status-select">New Status</label>
+                    <select id="policy-status-select" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="expired">Expired</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="policy-status-notes">Notes (optional)</label>
+                    <textarea id="policy-status-notes" rows="3" placeholder="Reason for status change..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('policy-status-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Client Status Modal -->
+    <div class="modal" id="client-status-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Client Status</h3>
+                <span class="close" onclick="closeModal('client-status-modal')">&times;</span>
+            </div>
+            <form id="client-status-form">
+                <div class="form-group">
+                    <label for="client-status-select">New Status</label>
+                    <select id="client-status-select" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="client-status-notes">Notes (optional)</label>
+                    <textarea id="client-status-notes" rows="3" placeholder="Reason for status change..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('client-status-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
