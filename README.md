@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Insurance Products Management System
 
 A full-stack web application for managing insurance products, clients, and claims. This system provides a modern, user-friendly interface with a robust backend API and database integration.
@@ -288,3 +289,7 @@ For questions or support:
 ---
 
 **Note**: This is a full-stack demonstration application. For production use, implement additional security measures, comprehensive testing, and proper deployment practices.
+=======
+# Insurance-Management-System
+Insurance Management System done for SEMESTER 3 Database Management Course 
+>>>>>>> 77e4dc7c1bbf5b45686338b2d9c33e9a24247453
