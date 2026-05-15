@@ -291,5 +291,5 @@ For questions or support:
 **Note**: This is a full-stack demonstration application. For production use, implement additional security measures, comprehensive testing, and proper deployment practices.
 =======
 # Insurance-Management-System
-Insurance Management System done for SEMESTER 3 Database Management Course 
+Insurance Management System  
 >>>>>>> 77e4dc7c1bbf5b45686338b2d9c33e9a24247453
