@@ -73,27 +73,6 @@ The system consists of the following main entities:
 
 The database is designed with proper relationships, constraints, and indexing to ensure data consistency and performance.
 
-## Screenshots
-
-### Login Page
-
-*Add screenshot here*
-
-### Dashboard
-
-*Add screenshot here*
-
-### Products Management
-
-*Add screenshot here*
-
-### Clients Management
-
-*Add screenshot here*
-
-### Claims Management
-
-*Add screenshot here*
 
 ## Installation
 
